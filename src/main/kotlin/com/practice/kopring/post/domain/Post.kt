@@ -27,4 +27,8 @@ class Post (
     var user: User,
 ) : BaseTimeEntity() {
 
+    fun update (title: String, content: String) {
+        this.title = title
+        this.content = content
+    }
 }
