@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>프로필</title>
+</head>
+
+<div layout:fragment="content">
+    <div style="max-width: 935px; margin: 0 auto; padding: 20px;">
+
+        <!-- 프로필 헤더 -->
+        <div class="profile-info">
+            <!-- 프로필 이미지 -->
+            <div class="text-center">
+                <img th:src="${user.profileImage != null ? user.profileImage : '/images/default-profile.png'}"
+                     alt="프로필 이미지" class="profile-image-large">
+            </div>
+
+            <!-- 프로필 정보 -->
+            <div class="flex-grow-1">
+                <!-- 사용자명과 버튼들 -->
+                <div class="d-flex align-items-center mb-3">
+                    <h2 style="font-weight: 300; margin-right: 20px;" th:text="${user.username}">username</h2>
+
+                    <!-- 본인 프로필인 경우 -->
+                    <div th:if="${isOwnProfile}">
+                        <a href="/users/edit" class="btn btn-outline-secondary me-2">프로필 편집</a>
+                        <a href="/settings" class="btn btn-outline-secondary">
+                            <i class="fas fa-cog"></i>
+                        </a>
+                    </div>
+
+                    <!-- 다른 사용자 프로필인 경우 -->
+                    <div th:unless="${isOwnProfile}">
+                        <button th:if="${!isFollowing}" class="btn-instagram me-2" onclick="toggleFollow([[${user.id}]])">
+                            팔로우
+                        </button>
+                        <button th:if="${isFollowing}" class="btn btn-outline-secondary me-2" onclick="toggleFollow([[${user.id}]])">
+                            팔로잉
+                        </button>
+                        <button class="btn btn-outline-secondary me-2">
+                            메시지
+                        </button>
+                        <button class="btn btn-outline-secondary">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 통계 -->
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-count" th:text="${#numbers.formatInteger(user.postCount, 0)}">0</div>
+                        <div class="stat-label">게시물</div>
+                    </div>
+                    <div class="stat-item">
+                        <a href="#" style="text-decoration: none; color: inherit;" onclick="showFollowers()">
+                            <div class="stat-count" th:text="${#numbers.formatInteger(user.followerCount, 0)}">0</div>
+                            <div class="stat-label">팔로워</div>
+                        </a>
+                    </div>
+                    <div class="stat-item">
+                        <a href="#" style="text-decoration: none; color: inherit;" onclick="showFollowing()">
+                            <div class="stat-count" th:text="${#numbers.formatInteger(user.followingCount, 0)}">0</div>
+                            <div class="stat-label">팔로우</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 사용자 정보 -->
+                <div style="margin-top: 20px;">
+                    <div style="font-weight: 600; margin-bottom: 8px;" th:text="${user.name}">이름</div>
+                    <div th:if="${user.bio}" style="line-height: 1.5;" th:text="${user.bio}">
+                        자기소개가 여기에 표시됩니다.
+                    </div>
+                    <div th:if="${user.website}" style="margin-top: 8px;">
+                        <a th:href="${user.website}" target="_blank" style="color: var(--instagram-blue); text-decoration: none;"
+                           th:text="${user.website}">website.com</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr style="margin: 40px 0; border-color: var(--instagram-border);">
+
+        <!-- 탭 메뉴 -->
+        <div class="text-center mb-4">
+            <nav>
+                <ul class="nav nav-tabs justify-content-center border-0" style="gap: 40px;">
+                    <li class="nav-item">
+                        <a class="nav-link active border-0 text-uppercase fw-bold"
+                           style="color: var(--instagram-dark-gray); font-size: 12px; letter-spacing: 1px;"
+                           href="#posts" data-tab="posts">
+                            <i class="fas fa-th me-2"></i>게시물
+                        </a>
+                    </li>
+                    <li class="nav-item" th:if="${isOwnProfile}">
+                        <a class="nav-link border-0 text-uppercase fw-bold"
+                           style="color: var(--instagram-gray); font-size: 12px; letter-spacing: 1px;"
+                           href="#saved" data-tab="saved">
+                            <i class="fas fa-bookmark me-2"></i>저장됨
+                        </a>
+                    </li>
+                    <li class="nav-item" th:if="${isOwnProfile}">
+                        <a class="nav-link border-0 text-uppercase fw-bold"
+                           style="color: var(--instagram-gray); font-size: 12px; letter-spacing: 1px;"
+                           href="#tagged" data-tab="tagged">
+                            <i class="fas fa-user-tag me-2"></i>태그됨
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- 게시물 그리드 -->
+        <div id="posts-tab" class="tab-content">
+            <!-- 게시물이 있는 경우 -->
+            <div th:if="${not #lists.isEmpty(posts)}" class="row g-1">
+                <div th:each="post : ${posts}" class="col-4">
+                    <div class="position-relative" style="aspect-ratio: 1; overflow: hidden;">
+                        <img th:src="${post.imageUrl}" alt="게시물"
+                             class="w-100 h-100" style="object-fit: cover; cursor: pointer;"
+                             onclick="openPostModal([[${post.id}]])">
+
+                        <!-- 호버 오버레이 -->
+                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                             style="background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.3s;"
+                             onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+                            <div class="text-white d-flex gap-3">
+                                <span><i class="fas fa-heart"></i> [[${post.likeCount}]]</span>
+                                <span><i class="fas fa-comment"></i> [[${post.commentCount}]]</span>
+                            </div>
+                        </div>
+
+                        <!-- 다중 이미지 표시 -->
+                        <div th:if="${post.hasMultipleImages}"
+                             class="position-absolute top-2 end-2">
+                            <i class="fas fa-clone text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 게시물이 없는 경우 -->
+            <div th:if="${#lists.isEmpty(posts)}" class="empty-state">
+                <div style="border: 2px solid var(--instagram-dark-gray); border-radius: 50%; width: 60px; height: 60px;
+                           display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i class="fas fa-camera" style="font-size: 24px;"></i>
+                </div>
+                <h4>사진 공유</h4>
+                <p>사진을 공유하면 프로필에 표시됩니다.</p>
+                <div th:if="${isOwnProfile}">
+                    <a href="/posts/new" style="color: var(--instagram-blue); text-decoration: none; font-weight: 600;">
+                        첫 번째 사진 공유하기
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 저장된 게시물 탭 (본인만) -->
+        <div id="saved-tab" class="tab-content d-none" th:if="${isOwnProfile}">
+            <div class="empty-state">
+                <div style="border: 2px solid var(--instagram-dark-gray); border-radius: 50%; width: 60px; height: 60px;
+                           display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i class="fas fa-bookmark" style="font-size: 24px;"></i>
+                </div>
+                <h4>저장</h4>
+                <p>다른 사람들의 사진과 동영상을 저장하세요.</p>
+            </div>
+        </div>
+
+        <!-- 태그된 게시물 탭 (본인만) -->
+        <div id="tagged-tab" class="tab-content d-none" th:if="${isOwnProfile}">
+            <div class="empty-state">
+                <div style="border: 2px solid var(--instagram-dark-gray); border-radius: 50%; width: 60px; height: 60px;
+                           display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i class="fas fa-user-tag" style="font-size: 24px;"></i>
+                </div>
+                <h4>사진 및 동영상</h4>
+                <p>회원님이 태그된 사진과 동영상이 여기에 표시됩니다.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 팔로워/팔로잉 모달 -->
+<div class="modal fade" id="followersModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="followersModalTitle">팔로워</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                <div id="followers-list">
+                    <!-- 팔로워 목록이 여기에 동적으로 로드됩니다 -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 게시물 상세 모달 -->
+<div class="modal fade" id="postModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body p-0" id="post-modal-content">
+                <!-- 게시물 상세 내용이 여기에 로드됩니다 -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 프로필 페이지 전용 스크립트 -->
+<script layout:fragment="scripts">
+    // 탭 전환
+    document.querySelectorAll('[data-tab]').forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // 모든 탭 비활성화
+            document.querySelectorAll('[data-tab]').forEach(t => {
+                t.classList.remove('active');
+                t.style.color = 'var(--instagram-gray)';
+            });
+
+            // 모든 탭 콘텐츠 숨기기
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('d-none');
+            });
+
+            // 선택된 탭 활성화
+            this.classList.add('active');
+            this.style.color = 'var(--instagram-dark-gray)';
+
+            // 해당 콘텐츠 보이기
+            const tabName = this.dataset.tab;
+            document.getElementById(tabName + '-tab').classList.remove('d-none');
+        });
+    });
+
+    // 팔로우 토글
+    function toggleFollow(userId) {
+        // TODO: 서버로 팔로우/언팔로우 요청
+        fetch(`/api/users/${userId}/follow`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                location.reload(); // 임시로 페이지 새로고침
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('오류가 발생했습니다.');
+            });
+    }
+
+    // 팔로워 목록 보기
+    function showFollowers() {
+        document.getElementById('followersModalTitle').textContent = '팔로워';
+        // TODO: AJAX로 팔로워 목록 로드
+        const modal = new bootstrap.Modal(document.getElementById('followersModal'));
+        modal.show();
+    }
+
+    // 팔로잉 목록 보기
+    function showFollowing() {
+        document.getElementById('followersModalTitle').textContent = '팔로잉';
+        // TODO: AJAX로 팔로잉 목록 로드
+        const modal = new bootstrap.Modal(document.getElementById('followersModal'));
+        modal.show();
+    }
+
+    // 게시물 상세 모달 열기
+    function openPostModal(postId) {
+        // TODO: AJAX로 게시물 상세 정보 로드
+        fetch(`/api/posts/${postId}`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('post-modal-content').innerHTML = html;
+                const modal = new bootstrap.Modal(document.getElementById('postModal'));
+                modal.show();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    // 그리드 아이템 호버 효과 개선
+    document.querySelectorAll('.position-relative').forEach(item => {
+        const overlay = item.querySelector('.position-absolute');
+        if (overlay) {
+            item.addEventListener('mouseenter', () => {
+                overlay.style.opacity = '1';
+            });
+            item.addEventListener('mouseleave', () => {
+                overlay.style.opacity = '0';
+            });
+        }
+    });
+</script>
+</html>

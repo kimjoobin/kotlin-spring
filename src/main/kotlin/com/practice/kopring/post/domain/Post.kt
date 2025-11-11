@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import org.hibernate.annotations.Comment
 
 @Entity
 class Post (
@@ -17,18 +18,49 @@ class Post (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    var title: String,
-
     @Column(columnDefinition = "TEXT")
-    var content: String,
+    @Comment("본문")
+    var caption: String? = null,
 
+    @Column(nullable = false, length = 500)
+    @Comment("이미지 URL, 일단 1개만")
+    var imageUrl: String,
+
+    @Column(nullable = false)
+    @Comment("좋아요 수")
+    var likeCount: Int = 0,
+    
+    @Column(nullable = false)
+    @Comment("댓글 수")
+    var commentCount: Int = 0,
+    
+    @Column(length = 100)
+    @Comment("위치")
+    var location: String? = null,
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     var user: User,
 ) : BaseTimeEntity() {
 
-    fun update (title: String, content: String) {
-        this.title = title
-        this.content = content
+    fun update(caption: String?, location: String?) {
+        this.caption = caption
+        this.location = location
+    }
+
+    fun increaseLikeCount() {
+        this.likeCount++
+    }
+
+    fun decreaseLikeCount() {
+        if (this.likeCount > 0) this.likeCount--
+    }
+
+    fun increaseCommentCount() {
+        this.commentCount++
+    }
+
+    fun decreaseCommentCount() {
+        if (this.commentCount > 0) this.commentCount--
     }
 }
