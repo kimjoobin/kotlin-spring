@@ -7,23 +7,15 @@
 </head>
 
 <div layout:fragment="content">
-  <!-- 피드 메인 -->
-
   <!-- 게시글이 있는 경우 -->
   <div th:if="${not #lists.isEmpty(posts)}">
-    <div th:each="post : ${posts}" class="post-card">
+    <div th:each="post : ${posts}" class="post-card fade-in">
       <!-- 게시글 헤더 -->
       <div class="post-header">
         <img th:src="${post.user.profileImage != null ? post.user.profileImage : '/images/default-profile.png'}"
              alt="프로필 이미지" class="profile-image">
         <div>
           <div class="username" th:text="${post.user.username}">username</div>
-          <div style="font-size: 12px; color: var(--instagram-gray);" th:text="${post.location}">위치 정보</div>
-        </div>
-        <div class="ms-auto">
-          <button class="btn btn-link text-dark" style="font-size: 18px;">
-            <i class="fas fa-ellipsis-h"></i>
-          </button>
         </div>
       </div>
 
@@ -32,70 +24,15 @@
         <img th:src="${post.imageUrl}" alt="게시글 이미지" class="post-image">
       </div>
 
-      <!-- 게시글 액션 버튼들 -->
-      <div class="post-actions">
-        <button class="action-btn" th:id="'like-btn-' + ${post.id}" onclick="toggleLike([[${post.id}]])">
-          <i class="far fa-heart"></i>
-        </button>
-        <button class="action-btn">
-          <i class="far fa-comment"></i>
-        </button>
-        <button class="action-btn">
-          <i class="far fa-paper-plane"></i>
-        </button>
-        <button class="action-btn ms-auto">
-          <i class="far fa-bookmark"></i>
-        </button>
-      </div>
-
-      <!-- 좋아요 개수 -->
-      <div class="px-3" th:if="${post.likeCount > 0}">
-                <span th:id="'like-count-' + ${post.id}"
-                      style="font-weight: 600; font-size: 14px;"
-                      th:text="'좋아요 ' + ${#numbers.formatInteger(post.likeCount, 0)} + '개'">좋아요 0개</span>
-      </div>
-
       <!-- 게시글 내용 -->
       <div class="post-caption">
         <span style="font-weight: 600;" th:text="${post.user.username}">username</span>
         <span th:text="${post.caption}">게시글 내용이 여기에 표시됩니다...</span>
-
-        <!-- 해시태그가 있다면 -->
-        <div th:if="${not #lists.isEmpty(post.hashtags)}" style="margin-top: 8px;">
-                    <span th:each="hashtag : ${post.hashtags}"
-                          style="color: var(--instagram-blue); margin-right: 8px;"
-                          th:text="'#' + ${hashtag.name}">#hashtag</span>
-        </div>
-      </div>
-
-      <!-- 댓글 미리보기 (최신 2개만) -->
-      <div th:if="${not #lists.isEmpty(post.comments)}" class="px-3">
-        <div th:each="comment, iter : ${post.comments}" th:if="${iter.index < 2}"
-             style="font-size: 14px; margin-bottom: 4px;">
-          <span style="font-weight: 600;" th:text="${comment.user.username}">commenter</span>
-          <span th:text="${comment.content}">댓글 내용</span>
-        </div>
-
-        <!-- 댓글이 더 있다면 -->
-        <div th:if="${#lists.size(post.comments) > 2}" style="font-size: 14px; color: var(--instagram-gray);">
-          <a th:href="'/posts/' + ${post.id}" style="text-decoration: none; color: var(--instagram-gray);">
-            댓글 [[${#lists.size(post.comments)}]]개 모두 보기
-          </a>
-        </div>
       </div>
 
       <!-- 게시 시간 -->
       <div class="post-time" th:text="${#temporals.format(post.createdAt, 'yyyy년 M월 d일')}">
         1일 전
-      </div>
-
-      <!-- 댓글 입력 -->
-      <div style="border-top: 1px solid var(--instagram-border); padding: 16px;">
-        <form th:action="'/posts/' + ${post.id} + '/comments'" method="post" class="d-flex">
-          <input type="text" name="content" class="form-control border-0"
-                 placeholder="댓글 달기..." style="font-size: 14px;">
-          <button type="submit" class="btn text-primary fw-bold border-0">게시</button>
-        </form>
       </div>
     </div>
   </div>
@@ -104,61 +41,15 @@
   <div th:if="${#lists.isEmpty(posts)}" class="empty-state">
     <i class="fas fa-camera"></i>
     <h4>아직 게시물이 없습니다</h4>
-    <p>친구들을 팔로우하여 사진과 동영상을 확인해보세요.</p>
+    <p>첫 번째 게시물을 만들어보세요!</p>
     <a href="/posts/new" class="btn-instagram">첫 게시물 만들기</a>
   </div>
 
-  <!-- 무한 스크롤을 위한 로딩 영역 -->
-  <div class="loading d-none" id="loading">
-    <i class="fas fa-spinner fa-spin"></i>
-    <div>로딩 중...</div>
-  </div>
-
-  <!-- 더 보기 버튼 (무한 스크롤 대신 임시) -->
+  <!-- 더 보기 버튼 -->
   <div th:if="${hasNext}" class="text-center mt-4 mb-4">
     <a th:href="'/posts/feed?page=' + ${currentPage + 1}" class="btn btn-outline-secondary">
       더 많은 게시물 보기
     </a>
   </div>
 </div>
-
-<!-- 피드 전용 스크립트 -->
-<script layout:fragment="scripts">
-  // 무한 스크롤 (나중에 구현)
-  let isLoading = false;
-  let currentPage = 0;
-
-  window.addEventListener('scroll', function() {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000) {
-      if (!isLoading) {
-        loadMorePosts();
-      }
-    }
-  });
-
-  function loadMorePosts() {
-    isLoading = true;
-    document.getElementById('loading').classList.remove('d-none');
-
-    // TODO: AJAX로 다음 페이지 로드
-    // fetch('/api/posts/feed?page=' + (currentPage + 1))
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         // 새로운 게시글들을 DOM에 추가
-    //         currentPage++;
-    //         isLoading = false;
-    //         document.getElementById('loading').classList.add('d-none');
-    //     });
-  }
-
-  // 댓글 폼 개선
-  document.querySelectorAll('form').forEach(form => {
-    form.addEventListener('submit', function(e) {
-      const input = this.querySelector('input[name="content"]');
-      if (!input.value.trim()) {
-        e.preventDefault();
-      }
-    });
-  });
-</script>
 </html>

@@ -42,6 +42,15 @@ dependencies {
     implementation("org.webjars:bootstrap:5.3.2")
     implementation("org.webjars:font-awesome:6.4.0")
     implementation("org.webjars:jquery:3.7.1")
+
+    //security
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    testImplementation("org.springframework.security:spring-security-test")
+
+    //jwt
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 }
 
 kotlin {

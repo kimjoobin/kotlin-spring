@@ -1,0 +1,426 @@
+/* Instagram Clone - Custom CSS */
+
+:root {
+    --instagram-blue: #0095f6;
+    --instagram-dark-gray: #262626;
+    --instagram-gray: #8e8e8e;
+    --instagram-light-gray: #fafafa;
+    --instagram-border: #dbdbdb;
+}
+
+body {
+    background-color: var(--instagram-light-gray);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ===== 네비게이션 바 ===== */
+.navbar-custom {
+    background-color: white;
+    border-bottom: 1px solid var(--instagram-border);
+    padding: 8px 0;
+}
+
+.navbar-brand {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: var(--instagram-dark-gray) !important;
+    text-decoration: none;
+}
+
+.navbar-brand:hover {
+    color: var(--instagram-dark-gray) !important;
+}
+
+.nav-link {
+    color: var(--instagram-dark-gray) !important;
+    font-size: 1.5rem;
+    padding: 8px 16px !important;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+    background-color: var(--instagram-light-gray);
+    color: var(--instagram-dark-gray) !important;
+}
+
+/* ===== 메인 컨텐츠 ===== */
+.main-content {
+    max-width: 470px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+/* ===== 게시글 카드 ===== */
+.post-card {
+    background: white;
+    border: 1px solid var(--instagram-border);
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.post-header {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--instagram-border);
+}
+
+.profile-image {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.profile-image-large {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-right: 30px;
+}
+
+.username {
+    font-weight: 600;
+    color: var(--instagram-dark-gray);
+    font-size: 14px;
+}
+
+.post-image {
+    width: 100%;
+    max-height: 600px;
+    object-fit: cover;
+}
+
+.post-caption {
+    padding: 16px;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.post-time {
+    padding: 0 16px 16px;
+    font-size: 10px;
+    color: var(--instagram-gray);
+    text-transform: uppercase;
+}
+
+/* ===== 버튼 스타일 ===== */
+.btn-instagram {
+    background-color: var(--instagram-blue);
+    border: none;
+    color: white;
+    padding: 8px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.2s;
+}
+
+.btn-instagram:hover {
+    background-color: #0080d6;
+    color: white;
+}
+
+.btn-instagram:disabled {
+    background-color: #b3d7ff;
+    cursor: not-allowed;
+}
+
+/* ===== 폼 스타일 ===== */
+.form-control {
+    border: 1px solid var(--instagram-border);
+    border-radius: 3px;
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+.form-control:focus {
+    border-color: var(--instagram-gray);
+    box-shadow: none;
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+    background-color: #ffeef0;
+}
+
+.form-control.is-valid {
+    border-color: #28a745;
+}
+
+/* ===== 이미지 업로드 ===== */
+.upload-area {
+    border: 2px dashed var(--instagram-border);
+    border-radius: 8px;
+    background-color: var(--instagram-light-gray);
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.upload-area:hover {
+    border-color: var(--instagram-blue);
+    background-color: #f0f8ff;
+}
+
+.upload-area.dragover {
+    border-color: var(--instagram-blue);
+    background-color: #e3f2fd;
+}
+
+/* ===== 빈 상태 ===== */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--instagram-gray);
+}
+
+.empty-state i {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.empty-state h4 {
+    color: var(--instagram-dark-gray);
+    margin-bottom: 15px;
+}
+
+/* ===== 프로필 스타일 ===== */
+.profile-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.profile-stats {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-count {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--instagram-dark-gray);
+}
+
+.stat-label {
+    font-size: 14px;
+    color: var(--instagram-gray);
+}
+
+/* ===== 로딩 & 에러 상태 ===== */
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: var(--instagram-gray);
+}
+
+.error-message {
+    background-color: #ffeef0;
+    color: #c03e3e;
+    border: 1px solid #ffccd2;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 768px) {
+    .main-content {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .post-card {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        margin-bottom: 8px;
+    }
+
+    .profile-image-large {
+        width: 80px;
+        height: 80px;
+        margin-right: 20px;
+    }
+
+    .profile-stats {
+        gap: 20px;
+    }
+
+    .profile-info {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 450px) {
+    .navbar-brand {
+        font-size: 1.5rem;
+    }
+
+    .nav-link {
+        font-size: 1.2rem;
+        padding: 6px 12px !important;
+    }
+}
+
+/* ===== 유틸리티 클래스 ===== */
+.text-instagram-blue {
+    color: var(--instagram-blue) !important;
+}
+
+.text-instagram-gray {
+    color: var(--instagram-gray) !important;
+}
+
+.bg-instagram-light {
+    background-color: var(--instagram-light-gray) !important;
+}
+
+.border-instagram {
+    border-color: var(--instagram-border) !important;
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ===== 로그인/회원가입 페이지 ===== */
+.auth-body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.auth-container {
+    max-width: 350px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.auth-box {
+    background: white;
+    border: 1px solid var(--instagram-border);
+    padding: 40px;
+    text-align: center;
+    border-radius: 1px;
+}
+
+.auth-logo {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--instagram-dark-gray);
+    margin-bottom: 30px;
+}
+
+.auth-subtitle {
+    color: var(--instagram-gray);
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    line-height: 20px;
+}
+
+.auth-form-control {
+    background-color: var(--instagram-light-gray);
+    margin-bottom: 10px;
+}
+
+.auth-forgot-password {
+    color: var(--instagram-blue);
+    font-size: 12px;
+    text-decoration: none;
+    margin-top: 15px;
+    display: block;
+}
+
+.auth-forgot-password:hover {
+    color: var(--instagram-blue);
+    text-decoration: underline;
+}
+
+.auth-secondary-box {
+    background: white;
+    border: 1px solid var(--instagram-border);
+    padding: 20px;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+    border-radius: 1px;
+}
+
+.auth-link {
+    color: var(--instagram-blue);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-link:hover {
+    color: var(--instagram-blue);
+}
+
+.auth-terms {
+    font-size: 12px;
+    color: var(--instagram-gray);
+    margin: 15px 0;
+    line-height: 16px;
+}
+
+.auth-terms a {
+    color: var(--instagram-blue);
+    text-decoration: none;
+}
+
+.auth-terms a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 450px) {
+    .auth-container {
+        padding: 0 20px;
+    }
+
+    .auth-box {
+        border: none;
+        padding: 20px;
+    }
+
+    .auth-secondary-box {
+        border: none;
+    }
+}

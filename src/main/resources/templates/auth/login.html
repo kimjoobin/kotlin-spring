@@ -3,544 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram Clone - 회원가입</title>
+    <title>Instagram Clone - 로그인</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-    <style>
-        :root {
-            --instagram-blue: #0095f6;
-            --instagram-dark-gray: #262626;
-            --instagram-gray: #8e8e8e;
-            --instagram-light-gray: #fafafa;
-            --instagram-border: #dbdbdb;
-        }
-
-        body {
-            background-color: var(--instagram-light-gray);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px 0;
-        }
-
-        .signup-container {
-            max-width: 350px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        .signup-box {
-            background: white;
-            border: 1px solid var(--instagram-border);
-            padding: 40px;
-            text-align: center;
-        }
-
-        .logo {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--instagram-dark-gray);
-            margin-bottom: 15px;
-        }
-
-        .subtitle {
-            color: var(--instagram-gray);
-            font-size: 17px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            line-height: 20px;
-        }
-
-        .form-control {
-            background-color: var(--instagram-light-gray);
-            border: 1px solid var(--instagram-border);
-            border-radius: 3px;
-            padding: 8px 16px;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        .form-control:focus {
-            background-color: white;
-            border-color: var(--instagram-gray);
-            box-shadow: none;
-        }
-
-        .form-control.is-invalid {
-            border-color: #dc3545;
-            background-color: #ffeef0;
-        }
-
-        .form-control.is-valid {
-            border-color: #28a745;
-        }
-
-        .invalid-feedback {
-            display: block;
-            font-size: 12px;
-            color: #dc3545;
-            text-align: left;
-            margin-bottom: 10px;
-        }
-
-        .btn-signup {
-            background-color: var(--instagram-blue);
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            width: 100%;
-            margin-top: 10px;
-            transition: background-color 0.2s;
-        }
-
-        .btn-signup:hover:not(:disabled) {
-            background-color: #0080d6;
-        }
-
-        .btn-signup:disabled {
-            background-color: #b3d7ff;
-            cursor: not-allowed;
-        }
-
-        .terms {
-            font-size: 12px;
-            color: var(--instagram-gray);
-            margin: 15px 0;
-            line-height: 16px;
-        }
-
-        .terms a {
-            color: var(--instagram-blue);
-            text-decoration: none;
-        }
-
-        .terms a:hover {
-            text-decoration: underline;
-        }
-
-        .divider {
-            margin: 20px 0;
-            position: relative;
-            text-align: center;
-            color: var(--instagram-gray);
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background-color: var(--instagram-border);
-        }
-
-        .divider span {
-            background-color: white;
-            padding: 0 18px;
-        }
-
-        .facebook-signup {
-            color: #385185;
-            font-weight: 600;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .facebook-signup:hover {
-            color: #385185;
-        }
-
-        .login-box {
-            background: white;
-            border: 1px solid var(--instagram-border);
-            padding: 20px;
-            text-align: center;
-            margin-top: 10px;
-            font-size: 14px;
-        }
-
-        .login-link {
-            color: var(--instagram-blue);
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .login-link:hover {
-            color: var(--instagram-blue);
-        }
-
-        .password-strength {
-            height: 4px;
-            margin-bottom: 8px;
-            border-radius: 2px;
-            transition: all 0.3s;
-        }
-
-        .strength-weak { background-color: #dc3545; }
-        .strength-medium { background-color: #ffc107; }
-        .strength-strong { background-color: #28a745; }
-
-        .username-status {
-            font-size: 12px;
-            margin-bottom: 8px;
-            text-align: left;
-        }
-
-        .available { color: #28a745; }
-        .unavailable { color: #dc3545; }
-        .checking { color: var(--instagram-gray); }
-
-        @media (max-width: 450px) {
-            .signup-container {
-                padding: 0 20px;
-            }
-
-            .signup-box {
-                border: none;
-                padding: 20px;
-            }
-
-            .login-box {
-                border: none;
-            }
-        }
-    </style>
+    <!-- Custom CSS -->
+    <link th:href="@{/css/custom.css}" rel="stylesheet">
 </head>
-<body>
-<div class="signup-container">
-    <!-- 회원가입 폼 -->
-    <div class="signup-box">
+<body class="auth-body">
+<div class="auth-container">
+    <!-- 로그인 폼 -->
+    <div class="auth-box">
         <!-- 로고 -->
-        <div class="logo">
+        <div class="auth-logo">
             <i class="fab fa-instagram"></i> Instagram
         </div>
 
-        <!-- 부제목 -->
-        <div class="subtitle">
-            친구들의 사진과 동영상을 보려면 가입하세요.
+        <!-- 에러 메시지 -->
+        <div th:if="${error}" class="error-message">
+            <span th:text="${error}">로그인에 실패했습니다.</span>
         </div>
 
-        <!-- 페이스북 회원가입 -->
-        <a href="#" class="facebook-signup">
-            <i class="fab fa-facebook-square me-2"></i>
-            Facebook으로 로그인
-        </a>
+        <!-- 로그인 폼 -->
+        <form action="/auth/login" method="post" data-form-type="login">
+            <input type="text" name="username" class="form-control auth-form-control"
+                   placeholder="사용자 이름 또는 이메일" required>
 
-        <!-- 구분선 -->
-        <div class="divider">
-            <span>또는</span>
-        </div>
+            <input type="password" name="password" class="form-control auth-form-control"
+                   placeholder="비밀번호" required>
 
-        <!-- 회원가입 폼 -->
-        <form action="/auth/signup" method="post" id="signupForm">
-
-            <!-- 이메일 -->
-            <div class="mb-2">
-                <input type="email" name="email" class="form-control" id="email"
-                       placeholder="이메일" required>
-                <div class="invalid-feedback" id="email-feedback"></div>
-            </div>
-
-            <!-- 이름 -->
-            <div class="mb-2">
-                <input type="text" name="name" class="form-control" id="name"
-                       placeholder="성명" required>
-                <div class="invalid-feedback" id="name-feedback"></div>
-            </div>
-
-            <!-- 사용자명 -->
-            <div class="mb-2">
-                <input type="text" name="username" class="form-control" id="username"
-                       placeholder="사용자 이름" required>
-                <div class="username-status" id="username-status"></div>
-                <div class="invalid-feedback" id="username-feedback"></div>
-            </div>
-
-            <!-- 비밀번호 -->
-            <div class="mb-2">
-                <input type="password" name="password" class="form-control" id="password"
-                       placeholder="비밀번호" required>
-                <div class="password-strength" id="password-strength"></div>
-                <div class="invalid-feedback" id="password-feedback"></div>
-            </div>
-
-            <!-- 비밀번호 확인 -->
-            <div class="mb-2">
-                <input type="password" name="passwordConfirm" class="form-control" id="passwordConfirm"
-                       placeholder="비밀번호 확인" required>
-                <div class="invalid-feedback" id="password-confirm-feedback"></div>
-            </div>
-
-            <!-- 생년월일 -->
-            <div class="mb-2">
-                <input type="date" name="birthDate" class="form-control" id="birthDate" required>
-                <div class="invalid-feedback" id="birthdate-feedback"></div>
-            </div>
-
-            <!-- 이용 약관 -->
-            <div class="terms">
-                저희 서비스를 이용하는 사람이 회원님의 연락처 정보를 Instagram에 업로드했을 수도 있습니다.
-                <a href="#">더 알아보기</a>
-            </div>
-
-            <div class="terms">
-                가입하면 Instagram의 <a href="#">약관</a>, <a href="#">개인정보처리방침</a> 및
-                <a href="#">쿠키 정책</a>에 동의하게 됩니다.
-            </div>
-
-            <button type="submit" class="btn btn-signup" id="signupBtn">
-                가입
+            <button type="submit" class="btn-instagram w-100 mt-2" id="login-btn">
+                로그인
             </button>
         </form>
+
+        <!-- 비밀번호 찾기 -->
+        <a href="/auth/forgot-password" class="auth-forgot-password">
+            비밀번호를 잊으셨나요?
+        </a>
     </div>
 
-    <!-- 로그인 링크 -->
-    <div class="login-box">
-        계정이 있으신가요?
-        <a href="/auth/login" class="login-link">로그인</a>
+    <!-- 회원가입 링크 -->
+    <div class="auth-secondary-box">
+        계정이 없으신가요?
+        <a href="/auth/signup" class="auth-link">가입하기</a>
     </div>
 </div>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- Custom JS -->
+<script th:src="@{/js/main.js}"></script>
+
 <script>
-    const form = document.getElementById('signupForm');
-    const submitBtn = document.getElementById('signupBtn');
+    // 로그인 폼 특별 처리
+    const form = document.querySelector('form[data-form-type="login"]');
+    const submitBtn = document.getElementById('login-btn');
 
-    // 필드 요소들
-    const email = document.getElementById('email');
-    const name = document.getElementById('name');
-    const username = document.getElementById('username');
-    const password = document.getElementById('password');
-    const passwordConfirm = document.getElementById('passwordConfirm');
-    const birthDate = document.getElementById('birthDate');
+    form.addEventListener('input', function() {
+        const username = form.querySelector('[name="username"]').value;
+        const password = form.querySelector('[name="password"]').value;
 
-    // 유효성 검사 상태
-    const validation = {
-        email: false,
-        name: false,
-        username: false,
-        password: false,
-        passwordConfirm: false,
-        birthDate: false
-    };
-
-    // 이메일 유효성 검사
-    email.addEventListener('blur', function() {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const isValid = emailRegex.test(this.value);
-
-        if (isValid) {
-            setFieldValid(this, 'email');
-            validation.email = true;
-        } else {
-            setFieldInvalid(this, 'email-feedback', '올바른 이메일 주소를 입력하세요.');
-            validation.email = false;
-        }
-        updateSubmitButton();
+        submitBtn.disabled = !(username.trim() && password.trim());
     });
 
-    // 이름 유효성 검사
-    name.addEventListener('blur', function() {
-        const isValid = this.value.trim().length >= 2;
-
-        if (isValid) {
-            setFieldValid(this, 'name');
-            validation.name = true;
-        } else {
-            setFieldInvalid(this, 'name-feedback', '이름은 2자 이상이어야 합니다.');
-            validation.name = false;
-        }
-        updateSubmitButton();
+    form.addEventListener('submit', function() {
+        showLoading(submitBtn);
     });
 
-    // 사용자명 유효성 검사 및 중복 확인
-    let usernameTimeout;
-    username.addEventListener('input', function() {
-        clearTimeout(usernameTimeout);
-        const value = this.value.trim();
-
-        if (value.length < 3) {
-            setFieldInvalid(this, 'username-feedback', '사용자 이름은 3자 이상이어야 합니다.');
-            document.getElementById('username-status').textContent = '';
-            validation.username = false;
-            updateSubmitButton();
-            return;
-        }
-
-        const usernameRegex = /^[a-zA-Z0-9._]+$/;
-        if (!usernameRegex.test(value)) {
-            setFieldInvalid(this, 'username-feedback', '사용자 이름에는 영문, 숫자, 점, 밑줄만 사용할 수 있습니다.');
-            document.getElementById('username-status').textContent = '';
-            validation.username = false;
-            updateSubmitButton();
-            return;
-        }
-
-        // 중복 확인 (디바운싱)
-        document.getElementById('username-status').innerHTML = '<i class="fas fa-spinner fa-spin"></i> 확인 중...';
-        document.getElementById('username-status').className = 'username-status checking';
-
-        usernameTimeout = setTimeout(() => {
-            checkUsernameAvailability(value);
-        }, 500);
-    });
-
-    // 비밀번호 강도 검사
-    password.addEventListener('input', function() {
-        const value = this.value;
-        const strength = calculatePasswordStrength(value);
-
-        const strengthBar = document.getElementById('password-strength');
-        strengthBar.className = 'password-strength';
-
-        if (value.length === 0) {
-            strengthBar.style.width = '0%';
-        } else if (strength < 2) {
-            strengthBar.style.width = '33%';
-            strengthBar.classList.add('strength-weak');
-        } else if (strength < 4) {
-            strengthBar.style.width = '66%';
-            strengthBar.classList.add('strength-medium');
-        } else {
-            strengthBar.style.width = '100%';
-            strengthBar.classList.add('strength-strong');
-        }
-
-        const isValid = value.length >= 8;
-        if (isValid) {
-            setFieldValid(this, 'password');
-            validation.password = true;
-        } else {
-            setFieldInvalid(this, 'password-feedback', '비밀번호는 8자 이상이어야 합니다.');
-            validation.password = false;
-        }
-
-        // 비밀번호 확인도 다시 검사
-        if (passwordConfirm.value) {
-            passwordConfirm.dispatchEvent(new Event('blur'));
-        }
-
-        updateSubmitButton();
-    });
-
-    // 비밀번호 확인 검사
-    passwordConfirm.addEventListener('blur', function() {
-        const isValid = this.value === password.value && this.value.length > 0;
-
-        if (isValid) {
-            setFieldValid(this, 'passwordConfirm');
-            validation.passwordConfirm = true;
-        } else {
-            setFieldInvalid(this, 'password-confirm-feedback', '비밀번호가 일치하지 않습니다.');
-            validation.passwordConfirm = false;
-        }
-        updateSubmitButton();
-    });
-
-    // 생년월일 검사
-    birthDate.addEventListener('change', function() {
-        const birthYear = new Date(this.value).getFullYear();
-        const currentYear = new Date().getFullYear();
-        const age = currentYear - birthYear;
-
-        if (age >= 13 && age <= 120) {
-            setFieldValid(this, 'birthDate');
-            validation.birthDate = true;
-        } else {
-            setFieldInvalid(this, 'birthdate-feedback', '13세 이상만 가입할 수 있습니다.');
-            validation.birthDate = false;
-        }
-        updateSubmitButton();
-    });
-
-    // 유효성 검사 헬퍼 함수들
-    function setFieldValid(field, key) {
-        field.classList.remove('is-invalid');
-        field.classList.add('is-valid');
-        document.getElementById(key + '-feedback').textContent = '';
-    }
-
-    function setFieldInvalid(field, feedbackId, message) {
-        field.classList.remove('is-valid');
-        field.classList.add('is-invalid');
-        document.getElementById(feedbackId).textContent = message;
-    }
-
-    function calculatePasswordStrength(password) {
-        let strength = 0;
-        if (password.length >= 8) strength++;
-        if (/[a-z]/.test(password)) strength++;
-        if (/[A-Z]/.test(password)) strength++;
-        if (/[0-9]/.test(password)) strength++;
-        if (/[^A-Za-z0-9]/.test(password)) strength++;
-        return strength;
-    }
-
-    function checkUsernameAvailability(username) {
-        // TODO: 실제 서버 API 호출
-        fetch(`/api/users/check-username?username=${username}`)
-            .then(response => response.json())
-            .then(data => {
-                const statusElement = document.getElementById('username-status');
-                if (data.available) {
-                    statusElement.innerHTML = '<i class="fas fa-check"></i> 사용 가능한 사용자 이름입니다.';
-                    statusElement.className = 'username-status available';
-                    setFieldValid(document.getElementById('username'), 'username');
-                    validation.username = true;
-                } else {
-                    statusElement.innerHTML = '<i class="fas fa-times"></i> 이미 사용 중인 사용자 이름입니다.';
-                    statusElement.className = 'username-status unavailable';
-                    setFieldInvalid(document.getElementById('username'), 'username-feedback', '다른 사용자 이름을 선택하세요.');
-                    validation.username = false;
-                }
-                updateSubmitButton();
-            })
-            .catch(() => {
-                // 오류 시 임시로 사용 가능으로 처리
-                validation.username = true;
-                updateSubmitButton();
-            });
-    }
-
-    function updateSubmitButton() {
-        const allValid = Object.values(validation).every(v => v === true);
-        submitBtn.disabled = !allValid;
-    }
-
-    // 폼 제출 처리
-    form.addEventListener('submit', function(e) {
-        if (submitBtn.disabled) {
-            e.preventDefault();
-            return;
-        }
-
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 가입 중...';
-    });
-
-    // 소셜 로그인 (임시)
-    document.querySelector('.facebook-signup').addEventListener('click', function(e) {
-        e.preventDefault();
-        alert('Facebook 회원가입은 아직 구현되지 않았습니다.');
-    });
-
-    // 초기 상태 설정
-    document.addEventListener('DOMContentLoaded', function() {
-        submitBtn.disabled = true;
-    });
+    // 초기 상태
+    submitBtn.disabled = true;
 </script>
 </body>
 </html>
