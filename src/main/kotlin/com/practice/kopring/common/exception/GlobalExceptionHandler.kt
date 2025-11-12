@@ -1,5 +1,6 @@
 package com.practice.kopring.common.exception
 
+import com.practice.kopring.common.enums.ErrorCode
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -16,8 +17,7 @@ class GlobalExceptionHandler {
         val errorCode = e.errorCode
         val response = ErrorResponse(
             status = errorCode.status,
-            message = errorCode.message,
-            code = errorCode.code
+            message = errorCode.message
         )
         // HTTP 상태 코드는 Enum에 정의된 status 값을 따릅니다.
         return ResponseEntity.status(errorCode.status).body(response)
@@ -33,8 +33,7 @@ class GlobalExceptionHandler {
 
         val response = ErrorResponse(
             status = HttpStatus.BAD_REQUEST.value(),
-            message = errorMessage, // 상세 메시지 사용
-            code = ErrorCode.INVALID_INPUT_VALUE.code
+            message = errorMessage // 상세 메시지 사용
         )
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response)
     }
@@ -49,8 +48,7 @@ class GlobalExceptionHandler {
         val errorCode = ErrorCode.INTERNAL_SERVER_ERROR
         val response = ErrorResponse(
             status = errorCode.status,
-            message = errorCode.message,
-            code = errorCode.code
+            message = errorCode.message
         )
         // 500 Internal Server Error 반환
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response)

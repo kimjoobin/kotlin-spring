@@ -1,5 +1,6 @@
 package com.practice.kopring.user.domain
 
+import com.practice.kopring.auth.dto.CreateUserRequest
 import com.practice.kopring.common.domain.BaseTimeEntity
 import com.practice.kopring.post.domain.Post
 import jakarta.persistence.CascadeType
@@ -31,8 +32,8 @@ class User (
     @Comment("실제 이름")
     var name: String,
 
-    @Column(nullable = false, length = 20)
-    var phone: String,
+    @Column(length = 20)
+    var phone: String? = null,
 
     @Column(length = 250)
     @Comment("소개")
@@ -42,13 +43,13 @@ class User (
     @Comment("웹사이트")
     var website: String? = null,
 
-    @Column(nullable = false)
+    @Comment("팔로워 수")
     var followerCount: Int = 0,
 
-    @Column(nullable = false)
+    @Comment("팔로잉 수")
     var followingCount: Int = 0,
 
-    @Column(nullable = false)
+    @Comment("게시글 좋아요수")
     var postCount: Int = 0,
 
     @Column(length = 500)
@@ -58,8 +59,6 @@ class User (
     @OneToMany(mappedBy = "user", cascade = [(CascadeType.ALL)])
     var posts: MutableList<Post> = mutableListOf()
 ) : BaseTimeEntity() {
-
-
     fun updateProfile(name: String, introduce: String?, website: String?) {
         this.name = name
         this.introduce = introduce

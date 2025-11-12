@@ -1,7 +1,14 @@
 package com.practice.kopring.auth.controller
 
 import com.practice.kopring.auth.dto.CreateUserRequest
+import com.practice.kopring.auth.dto.LoginResponse
+import com.practice.kopring.auth.dto.UserLoginRequest
 import com.practice.kopring.auth.service.AuthService
+import com.practice.kopring.common.ApiResponse
+import io.swagger.v3.oas.annotations.Operation
+import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -13,10 +20,22 @@ class AuthController (
     private val authService: AuthService
 ) {
 
-
     @PostMapping("/signup")
-    fun signup(@RequestBody request: CreateUserRequest): String {
-        return "auth/signup"
+    @Operation(summary = "회원가입")
+    fun signup(@RequestBody @Valid request: CreateUserRequest): ResponseEntity<ApiResponse<Nothing>> {
+        authService.signup(request)
+        return ResponseEntity.ok(
+            ApiResponse.success("회원가입이 완료되었습니다.", HttpStatus.CREATED.value())
+        )
+    }
+
+    @PostMapping("/login")
+    @Operation(summary = "로그인")
+    fun login(@RequestBody @Valid request: UserLoginRequest): ResponseEntity<ApiResponse<LoginResponse>> {
+        val response = authService.login(request)
+        return ResponseEntity.ok(
+            ApiResponse.success(response, "회원가입이 완료되었습니다.", HttpStatus.OK.value())
+        )
     }
 
 }
