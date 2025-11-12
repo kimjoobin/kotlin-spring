@@ -32,16 +32,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    // Thymeleaf
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-
-    // Thymeleaf Layout Dialect (레이아웃 관리용 - 추천)
-    implementation("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect")
-
-    // Bootstrap & CSS (WebJars 방식)
-    implementation("org.webjars:bootstrap:5.3.2")
-    implementation("org.webjars:font-awesome:6.4.0")
-    implementation("org.webjars:jquery:3.7.1")
+    // Swagger/OpenAPI 3
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 
     //security
     implementation("org.springframework.boot:spring-boot-starter-security")

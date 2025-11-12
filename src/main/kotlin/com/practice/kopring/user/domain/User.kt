@@ -59,6 +59,7 @@ class User (
     var posts: MutableList<Post> = mutableListOf()
 ) : BaseTimeEntity() {
 
+
     fun updateProfile(name: String, introduce: String?, website: String?) {
         this.name = name
         this.introduce = introduce
