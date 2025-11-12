@@ -38,3 +38,9 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+### application.yml ###
+application*.yml
+application.yml
+gradlew*
+gradle-*
