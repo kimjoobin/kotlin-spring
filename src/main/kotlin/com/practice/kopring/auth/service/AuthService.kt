@@ -7,6 +7,9 @@ import com.practice.kopring.common.exception.BusinessException
 import com.practice.kopring.common.enums.ErrorCode
 import com.practice.kopring.user.domain.User
 import com.practice.kopring.user.repository.UserRepository
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class AuthService(
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val authenticationManager: AuthenticationManager,
 ) {
 
     @Transactional
@@ -45,6 +49,10 @@ class AuthService(
     }
 
     fun login(request: UserLoginRequest) : LoginResponse {
+        // spring security의 AuthenticationManager를 통한 인증
+        val authToken = UsernamePasswordAuthenticationToken(request.username, request.password)
+        val authentication: Authentication = authenticationManager.authenticate(authToken)
+
         return LoginResponse("", "")
     }
 }

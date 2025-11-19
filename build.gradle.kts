@@ -43,6 +43,9 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
+    // 작성하는 시점의 최신 버전이 5.1.1 이어서 사용함
+    implementation("io.github.oshai:kotlin-logging-jvm:5.1.1")
 }
 
 kotlin {
