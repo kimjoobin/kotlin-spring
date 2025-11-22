@@ -1,7 +1,9 @@
 package com.practice.kopring.common.config
 
 import com.practice.kopring.auth.service.CustomUserDetailsService
+import com.practice.kopring.jwt.JwtAccessDenied
 import com.practice.kopring.jwt.JwtAuthenticationFilter
+import com.practice.kopring.jwt.JwtEntryPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -19,7 +21,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 class SecurityConfig(
     private val customUserDetailsService: CustomUserDetailsService,
-    private val jwtAuthenticationFilter: JwtAuthenticationFilter
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter,
+    private val jwtAuthenticationEntryPoint: JwtEntryPoint,
+    private val jwtAccessDeniedHandler: JwtAccessDenied,
 ) {
 
     @Bean
@@ -53,6 +57,14 @@ class SecurityConfig(
             }
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+
+            // 🚨 인증/인가 예외 핸들러 등록
+            .exceptionHandling { handling ->
+                // 401 Unauthorized 발생 시 호출
+                handling.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                // 403 Forbidden 발생 시 호출
+                handling.accessDeniedHandler(jwtAccessDeniedHandler)
+            }
 
 
         return http.build()
