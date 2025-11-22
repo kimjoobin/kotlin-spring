@@ -4,8 +4,9 @@ import com.practice.kopring.auth.dto.CreateUserRequest
 import com.practice.kopring.auth.dto.LoginResponse
 import com.practice.kopring.auth.dto.UserLoginRequest
 import com.practice.kopring.auth.service.AuthService
-import com.practice.kopring.common.ApiResponse
+import com.practice.kopring.common.response.ApiResponse
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
 @RequestMapping("/api/auth")
+@Tag(name = "AuthController", description = "인증 컨트롤러")
 class AuthController (
     private val authService: AuthService
 ) {

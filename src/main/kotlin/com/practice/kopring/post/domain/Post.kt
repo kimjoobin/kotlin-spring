@@ -18,6 +18,9 @@ class Post (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
+    @Column(name = "post_seq", unique = true, nullable = false, length = 36)
+    val postSeq: String,
+
     @Column(columnDefinition = "TEXT")
     @Comment("본문")
     var caption: String? = null,

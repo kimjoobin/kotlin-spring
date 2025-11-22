@@ -1,43 +1,46 @@
 package com.practice.kopring.post.controller
 
+import com.practice.kopring.auth.dto.CustomUserDetails
+import com.practice.kopring.common.response.ApiResponse
+import com.practice.kopring.common.response.PageResponse
+import com.practice.kopring.post.dto.request.CreatePostRequest
+import com.practice.kopring.post.dto.response.PostResponse
 import com.practice.kopring.post.service.PostService
-import org.springframework.stereotype.Controller
-import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
+import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
-@Controller
-@RequestMapping("/posts")
+@RestController
+@RequestMapping("/api/posts")
+@Tag(name = "PostController", description = "피드 컨트롤러")
 class PostController (
     private val postService: PostService
 ) {
 
-    @GetMapping("/feed")
-    fun feed(
-        @RequestParam(defaultValue = "0") page: Int,
-        model: Model
-    ): String {
-        val posts = postService.getFeed(page)
-        model.addAttribute("posts", posts)
-        return "posts/feed"
+    @PostMapping("", consumes = ["multipart/form-data"])
+    fun createPost(
+        @RequestPart request: CreatePostRequest,
+        @RequestPart(required = false) file: List<MultipartFile>?,
+        @AuthenticationPrincipal userDetails: CustomUserDetails
+    ): ResponseEntity<ApiResponse<Nothing>> {
+        val userId = userDetails.getUserSeq()
+
+        postService.createPost(request, file, userId)
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            ApiResponse.success("등록되었습니다.", HttpStatus.CREATED.value())
+        )
     }
 
-    @GetMapping("/new")
-    fun createForm(): String {
-        return "posts/create"
+    @GetMapping("")
+    fun getPostList(
+        pageable: Pageable
+    ): ResponseEntity<ApiResponse<PageResponse<PostResponse>>> {
+        return ResponseEntity.ok(
+            ApiResponse.success(postService.getPostList(pageable), "조회 성공", HttpStatus.OK.value())
+        )
     }
-
-    @PostMapping("")
-    fun createBoard(
-        @RequestParam title: String,
-        @RequestParam content: String,
-        @RequestParam(required = false) file: MultipartFile?,
-    ): String {
-        postService.createPost(title, content, file)
-        return "redirect:/posts/feed"
-    }
-
 }

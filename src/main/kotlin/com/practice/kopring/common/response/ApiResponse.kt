@@ -1,4 +1,4 @@
-package com.practice.kopring.common
+package com.practice.kopring.common.response
 
 data class ApiResponse<T: Any?>(
     // 요청 처리 성공 여부
