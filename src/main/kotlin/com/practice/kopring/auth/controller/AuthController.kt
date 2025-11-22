@@ -34,7 +34,7 @@ class AuthController (
     fun login(@RequestBody @Valid request: UserLoginRequest): ResponseEntity<ApiResponse<LoginResponse>> {
         val response = authService.login(request)
         return ResponseEntity.ok(
-            ApiResponse.success(response, "회원가입이 완료되었습니다.", HttpStatus.OK.value())
+            ApiResponse.success(response, "로그인에 성공하였습니다.", HttpStatus.OK.value())
         )
     }
 

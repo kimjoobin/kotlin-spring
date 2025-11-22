@@ -3,6 +3,7 @@ package com.practice.kopring.common.exception
 import com.practice.kopring.common.enums.ErrorCode
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -52,5 +53,16 @@ class GlobalExceptionHandler {
         )
         // 500 Internal Server Error 반환
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response)
+    }
+
+    @ExceptionHandler(BadCredentialsException::class)
+    fun handleBadCredentialsException(e: BadCredentialsException): ResponseEntity<ErrorResponse> {
+        val errorCode = ErrorCode.LOGIN_FAILED
+        val response = ErrorResponse(
+            status = errorCode.status,
+            message = errorCode.message
+        )
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response)
     }
 }

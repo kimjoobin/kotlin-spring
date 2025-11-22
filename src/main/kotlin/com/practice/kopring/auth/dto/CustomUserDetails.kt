@@ -29,6 +29,8 @@ class CustomUserDetails(
 
     fun getUserId(): Long? = user.id
 
+    fun getUserSeq(): String = user.userSeq
+
     fun getName(): String = user.name
 
     fun getEmail(): String = user.email

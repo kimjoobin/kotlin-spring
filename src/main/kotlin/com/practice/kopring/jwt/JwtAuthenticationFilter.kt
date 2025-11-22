@@ -22,7 +22,7 @@ class JwtAuthenticationFilter(
         filterChain: FilterChain
     ) {
         try {
-            val token = jwtProvider.resolveToken(request.getHeader("Authorizaion"))
+            val token = jwtProvider.resolveToken(request.getHeader("Authorization"))
 
             if (token != null && SecurityContextHolder.getContext().authentication == null) {
                 val username = jwtProvider.getUsernameFromToken(token)
@@ -45,7 +45,7 @@ class JwtAuthenticationFilter(
             }
 
         } catch (ex: Exception) {
-
+            logger.error("JWT 토큰 처리 중 오류 발생", ex)
         }
         filterChain.doFilter(request, response)
     }
@@ -62,5 +62,4 @@ class JwtAuthenticationFilter(
 
         return excludePaths.any { path.startsWith(it) }
     }
-
 }

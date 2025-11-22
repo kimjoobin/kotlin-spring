@@ -1,10 +1,12 @@
 package com.practice.kopring.auth.service
 
 import com.practice.kopring.auth.dto.CreateUserRequest
+import com.practice.kopring.auth.dto.CustomUserDetails
 import com.practice.kopring.auth.dto.LoginResponse
 import com.practice.kopring.auth.dto.UserLoginRequest
 import com.practice.kopring.common.exception.BusinessException
 import com.practice.kopring.common.enums.ErrorCode
+import com.practice.kopring.jwt.JwtProvider
 import com.practice.kopring.user.domain.User
 import com.practice.kopring.user.repository.UserRepository
 import org.springframework.security.authentication.AuthenticationManager
@@ -13,12 +15,14 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 @Service
 class AuthService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val authenticationManager: AuthenticationManager,
+    private val jwtProvider: JwtProvider
 ) {
 
     @Transactional
@@ -38,7 +42,8 @@ class AuthService(
             username = request.username,
             email = request.email,
             password = encodePassword,
-            name = request.name
+            name = request.name,
+            userSeq = UUID.randomUUID().toString(),
         )
 
         val saveUser = userRepository.save(user)
@@ -53,6 +58,15 @@ class AuthService(
         val authToken = UsernamePasswordAuthenticationToken(request.username, request.password)
         val authentication: Authentication = authenticationManager.authenticate(authToken)
 
-        return LoginResponse("", "")
+        // 인증 성공 후 UserDetails에서 사용자 정보 추출
+        val userDetails = authentication.principal as CustomUserDetails
+        val user = userDetails.getUser()
+
+        // jwt 생성
+        val userId: String = user.userSeq
+        val accessToken = jwtProvider.generateAccessToken(userId, user.username)
+        val refreshToken = jwtProvider.generateRefreshToken(userId, user.username)
+
+        return LoginResponse(accessToken, refreshToken)
     }
 }

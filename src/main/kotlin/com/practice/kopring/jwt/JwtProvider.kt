@@ -10,10 +10,13 @@ import java.util.Date
 import javax.crypto.SecretKey
 
 @Component
-class JwtProvider {
+class JwtProvider(
+    @Value("\${jwt.key}")
+    private var secretKey: String
+) {
+
+    // 클래스 레벨의 정적(static) 멤버를 만들기 위한 방법
     companion object {
-        @Value("\${jwt.key}")
-        private lateinit var secretKey: String
 
         private val ACCESS_TOKEN_EXPIRATION: Long = 30 * 60 * 1000
 
@@ -25,7 +28,7 @@ class JwtProvider {
     }
 
     // Access Token 생성
-    fun generateAccessToken(userId: Long, username: String): String {
+    fun generateAccessToken(userId: String, username: String): String {
         return createToken(
             claims = mapOf(
                 "userId" to userId,
@@ -38,7 +41,7 @@ class JwtProvider {
     }
 
     // Refresh Token 생성
-    fun generateRefreshToken(userId: Long, username: String): String {
+    fun generateRefreshToken(userId: String, username: String): String {
         return createToken(
             claims = mapOf(
                 "userId" to userId,

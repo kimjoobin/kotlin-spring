@@ -18,6 +18,9 @@ class User (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
+    @Column(name = "user_seq", unique = true, nullable = false, length = 36)
+    val userSeq: String,
+
     @Column(unique = true, nullable = false, length = 50)
     @Comment("로그인 ID")
     var username: String,
