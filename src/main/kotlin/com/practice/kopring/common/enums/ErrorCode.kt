@@ -3,6 +3,7 @@ package com.practice.kopring.common.enums
 enum class ErrorCode(val status: Int, val message: String) {
     // 400 Bad Request 관련
     INVALID_INPUT_VALUE(400, "잘못된 입력 값입니다."),
+    MAX_SIZE_FILE(400, "파일의 크기가 너무 커서 업로드 할수 없습니다."),
 
     // 401 - Unauthorized
     LOGIN_FAILED(401, "아이디 또는 비밀번호를 잘못 입력하였습니다. 다시 시도해주세요."),

@@ -51,6 +51,7 @@ class SecurityConfig(
                         "/v3/api-docs/**"
                     )
                     .permitAll()
+                    .anyRequest().authenticated()   // 이거 없으면 모든 요청이 거부됨
             }
             .sessionManagement { session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

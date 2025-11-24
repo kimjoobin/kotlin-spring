@@ -28,6 +28,8 @@ class JwtAuthenticationFilter(
                 val username = jwtProvider.getUsernameFromToken(token)
 
                 if (jwtProvider.validateToken(token, username)) {
+                    logger.info("jwt: $token")
+                    logger.info("uri: ${request.requestURI}")
                     val userDetails = userDetailsService.loadUserByUsername(username)
 
                     val authToken = UsernamePasswordAuthenticationToken(
@@ -38,9 +40,9 @@ class JwtAuthenticationFilter(
                     authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
 
                     SecurityContextHolder.getContext().authentication = authToken
-                    logger.debug("JWT 토큰 검증 성공: $username")
+                    logger.info("JWT 토큰 검증 성공: $username")
                 } else {
-                    logger.debug("JWT 토큰 검증 실패: $username")
+                    logger.info("JWT 토큰 검증 실패: $username")
                 }
             }
 
@@ -57,7 +59,7 @@ class JwtAuthenticationFilter(
         val excludePaths = listOf(
             "/api/auth/**",
             "/swagger-ui/**",
-            "/v3/api-docs/**"
+            "/v3/api-docs/**",
         )
 
         return excludePaths.any { path.startsWith(it) }

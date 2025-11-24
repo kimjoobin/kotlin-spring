@@ -7,6 +7,7 @@ import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.multipart.MaxUploadSizeExceededException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
@@ -64,5 +65,16 @@ class GlobalExceptionHandler {
         )
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response)
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException::class)
+    fun handleMaxupSizeExceededException(e: MaxUploadSizeExceededException): ResponseEntity<ErrorResponse> {
+        val response = ErrorResponse(
+            status = HttpStatus.BAD_REQUEST.value(),
+            message = ErrorCode.MAX_SIZE_FILE.message
+        )
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(response)
     }
 }
