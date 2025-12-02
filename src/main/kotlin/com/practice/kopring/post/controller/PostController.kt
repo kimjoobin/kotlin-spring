@@ -6,6 +6,7 @@ import com.practice.kopring.common.response.PageResponse
 import com.practice.kopring.post.dto.request.CreatePostRequest
 import com.practice.kopring.post.dto.response.PostResponse
 import com.practice.kopring.post.service.PostService
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -22,9 +23,10 @@ class PostController (
 ) {
 
     @PostMapping("", consumes = ["multipart/form-data"])
+    @Operation(summary = "피드 등록", description = "피드를 등록합니다.")
     fun createPost(
-        @RequestPart request: CreatePostRequest,
-        @RequestPart(required = false) file: List<MultipartFile>?,
+        @RequestPart(value = "request") request: CreatePostRequest,
+        @RequestPart(value = "files", required = false) file: List<MultipartFile>,
         @AuthenticationPrincipal userDetails: CustomUserDetails
     ): ResponseEntity<ApiResponse<Nothing>> {
         val userId = userDetails.getUserSeq()
