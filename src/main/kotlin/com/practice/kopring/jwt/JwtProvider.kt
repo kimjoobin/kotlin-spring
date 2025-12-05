@@ -114,13 +114,6 @@ class JwtProvider(
         }
     }
 
-    // 토큰에서 Bearer 제거
-    fun resolveToken(bearerToken: String?): String? {
-        return if (!bearerToken.isNullOrEmpty() && bearerToken.startsWith("Bearer ")) {
-            bearerToken.substring(7)
-        } else null
-    }
-
     // Access Token 만료 시간 반환 (초 단위)
     fun getAccessTokenExpirationInSeconds(): Long {
         return ACCESS_TOKEN_EXPIRATION / 1000
