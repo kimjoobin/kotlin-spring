@@ -29,15 +29,6 @@ class JwtAuthenticationFilter(
             logger.info("=== JWT Filter ===")
             logger.info("Method: ${request.method}")
             logger.info("URI: ${request.requestURI}")
-            logger.info("Origin: ${request.getHeader("Origin")}")
-            logger.info("Authorization: ${request.getHeader("Authorization")}")
-
-            // OPTIONS 요청은 바로 통과
-            if (request.method == "OPTIONS") {
-                logger.info("OPTIONS 요청 - 필터 통과")
-                filterChain.doFilter(request, response)
-                return
-            }
 
             val token = resolveToken(request)
             logger.info("Token: $token")
@@ -46,8 +37,6 @@ class JwtAuthenticationFilter(
                 val username = jwtProvider.getUsernameFromToken(token)
 
                 if (jwtProvider.validateToken(token, username)) {
-                    logger.info("jwt: $token")
-                    logger.info("uri: ${request.requestURI}")
                     val userDetails = userDetailsService.loadUserByUsername(username)
 
                     val authToken = UsernamePasswordAuthenticationToken(

@@ -42,7 +42,11 @@ class PostController (
         pageable: Pageable
     ): ResponseEntity<ApiResponse<PageResponse<PostResponse>>> {
         return ResponseEntity.ok(
-            ApiResponse.success(postService.getPostList(pageable), "조회 성공", HttpStatus.OK.value())
+            ApiResponse.success(
+                postService.getPostList(pageable),
+                "조회 성공",
+                HttpStatus.OK.value()
+            )
         )
     }
 }

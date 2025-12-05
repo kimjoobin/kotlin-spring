@@ -11,7 +11,7 @@ data class PostResponse @QueryProjection constructor(
     val location: String?,
     val likeCount: Int,
     val commentCount: Int,
-    val author: AuthorInfo,
+    val user: AuthorInfo,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 )

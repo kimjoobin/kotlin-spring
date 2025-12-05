@@ -34,9 +34,8 @@ class SecurityConfig(
 
         http.cors { it.configurationSource(corsConfigurationSource()) }
         http.csrf { it.disable() }
-            .authorizeHttpRequests { auth ->
-                auth
-                    .requestMatchers(
+            .authorizeHttpRequests {
+                it.requestMatchers(
                         "/api/auth/**",
                         "/swagger-ui/**",
                         "/v3/api-docs/**"
