@@ -56,6 +56,9 @@ dependencies {
     // QueryDSL
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
     kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
+
+    // p6spy
+    implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0")
 }
 
 kotlin {

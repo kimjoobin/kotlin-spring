@@ -1,6 +1,9 @@
 package com.practice.kopring.post.service
 
+import com.practice.kopring.common.enums.ErrorCode
+import com.practice.kopring.common.exception.BusinessException
 import com.practice.kopring.common.response.PageResponse
+import com.practice.kopring.common.service.FileStorageService
 import com.practice.kopring.post.domain.Post
 import com.practice.kopring.post.dto.request.CreatePostRequest
 import com.practice.kopring.post.dto.response.PostResponse
@@ -17,6 +20,7 @@ import java.util.UUID
 class PostService (
     private val postRepository: PostRepository,
     private val userRepository: UserRepository,
+    private val fileService: FileStorageService
 ) {
 
     @Transactional
@@ -24,20 +28,33 @@ class PostService (
                    files: List<MultipartFile>,
                    userSeq: String
     ) {
+        if (files.isEmpty())
+            throw BusinessException(ErrorCode.REQUIRED_IMAGE)
+
+        if (files.size > 10)
+            throw BusinessException(ErrorCode.MAX_COUNT_IMAGE)
+
         val findUser = userRepository.findByUserSeq(userSeq)
+            ?: throw BusinessException(ErrorCode.NOT_FOUND_RESOURCE)
 
         // TODO: 실제 파일업로드 로직 (s3)
-        val uploadImageUrl = uploadImages(files)
+        val uploadImageUrl = files.map { file ->
+            fileService.storeFile(file)
+        }
 
         val savedPost = Post(
             postSeq = UUID.randomUUID().toString(),
-            imageUrl = uploadImageUrl,
             caption = request.caption,
             location = request.location,
             user = findUser
         )
 
+        savedPost.addImage(uploadImageUrl)
+
         postRepository.save(savedPost)
+
+        // 유저의 게시글 수 증가
+        findUser.increasePostCount()
     }
 
 

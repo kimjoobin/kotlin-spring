@@ -4,9 +4,9 @@ import com.practice.kopring.user.dto.response.AuthorInfo
 import com.querydsl.core.annotations.QueryProjection
 import java.time.LocalDateTime
 
-data class PostResponse @QueryProjection constructor(
+data class PostResponse(
     val postSeq: String,  // PK 대신 postSeq 노출
-    val imageUrl: String,
+    var images: List<String> = emptyList(),
     val caption: String?,
     val location: String?,
     val likeCount: Int,

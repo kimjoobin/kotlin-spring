@@ -2,6 +2,7 @@ package com.practice.kopring.post.domain
 
 import com.practice.kopring.common.domain.BaseTimeEntity
 import com.practice.kopring.user.domain.User
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -10,9 +11,13 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
 import org.hibernate.annotations.Comment
+import org.hibernate.annotations.DynamicUpdate
+import java.util.UUID
 
 @Entity
+@DynamicUpdate
 class Post (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,9 +30,9 @@ class Post (
     @Comment("본문")
     var caption: String? = null,
 
-    @Column(nullable = false, length = 500)
+    @Column(length = 500)
     @Comment("이미지 URL, 일단 1개만")
-    var imageUrl: String,
+    var imageUrl: String? = null,
 
     @Column(nullable = false)
     @Comment("좋아요 수")
@@ -44,11 +49,26 @@ class Post (
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     var user: User,
+
+    @OneToMany(mappedBy = "post", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val images: MutableList<PostImage> = mutableListOf()
 ) : BaseTimeEntity() {
 
     fun update(caption: String?, location: String?) {
         this.caption = caption
         this.location = location
+    }
+
+    fun addImage(imagePath: List<String>) {
+        imagePath.forEachIndexed { index, path ->
+            val postImage = PostImage(
+                imageSeq = UUID.randomUUID().toString(),
+                path = path,
+                imageOrder = index,
+                post = this
+            )
+            images.add(postImage)
+        }
     }
 
     fun increaseLikeCount() {
