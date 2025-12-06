@@ -83,6 +83,7 @@ class JwtAuthenticationFilter(
             "/api/auth",
             "/swagger-ui",
             "/v3/api-docs",
+            "/images"
         )
 
         return excludePaths.any { path.startsWith(it) }

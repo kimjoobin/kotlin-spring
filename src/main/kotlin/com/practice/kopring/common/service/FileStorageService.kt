@@ -1,5 +1,7 @@
 package com.practice.kopring.common.service
 
+import com.practice.kopring.common.enums.ErrorCode
+import com.practice.kopring.common.exception.BusinessException
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -25,12 +27,7 @@ class FileStorageService(
     fun storeFile(file: MultipartFile): String {
         // 1. 파일 검증
         if (file.isEmpty) {
-            throw IllegalArgumentException("파일이 비어있습니다.")
-        }
-
-        val contentType = file.contentType
-        if (contentType == null || !contentType.startsWith("image/")) {
-            throw IllegalArgumentException("이미지 파일만 업로드 가능합니다.")
+            throw BusinessException(ErrorCode.REQUIRED_IMAGE)
         }
 
         // 2. 파일명 생성

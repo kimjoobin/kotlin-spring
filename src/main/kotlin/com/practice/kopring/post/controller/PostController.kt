@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
@@ -22,7 +23,7 @@ class PostController (
     private val postService: PostService
 ) {
 
-    @PostMapping("", consumes = ["multipart/form-data"])
+    @PostMapping("/create", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @Operation(summary = "피드 등록", description = "피드를 등록합니다.")
     fun createPost(
         @RequestPart(value = "request") request: CreatePostRequest,
@@ -38,6 +39,7 @@ class PostController (
     }
 
     @GetMapping("")
+    @Operation(summary = "피드 조회", description = "메인화면 피드를 조회합니다.")
     fun getPostList(
         pageable: Pageable
     ): ResponseEntity<ApiResponse<PageResponse<PostResponse>>> {

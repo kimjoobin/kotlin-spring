@@ -1,6 +1,8 @@
 package com.practice.kopring.common.exception
 
+import com.p6spy.engine.common.P6LogQuery.log
 import com.practice.kopring.common.enums.ErrorCode
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.BadCredentialsException
@@ -8,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.multipart.MaxUploadSizeExceededException
+import org.springframework.web.multipart.MultipartException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
@@ -72,6 +75,19 @@ class GlobalExceptionHandler {
         val response = ErrorResponse(
             status = HttpStatus.BAD_REQUEST.value(),
             message = ErrorCode.MAX_SIZE_FILE.message
+        )
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(response)
+    }
+
+    @ExceptionHandler(MultipartException::class)
+    fun handleMultipartException(e: MultipartException): ResponseEntity<ErrorResponse> {
+        logger { "MultipartException: $e" }
+
+        val response = ErrorResponse(
+            status = HttpStatus.BAD_REQUEST.value(),
+            message = e.message.toString()
         )
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

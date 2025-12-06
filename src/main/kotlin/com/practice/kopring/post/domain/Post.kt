@@ -26,7 +26,7 @@ class Post (
     @Column(name = "post_seq", unique = true, nullable = false, length = 36)
     val postSeq: String,
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     @Comment("본문")
     var caption: String? = null,
 

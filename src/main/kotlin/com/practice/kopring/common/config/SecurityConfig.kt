@@ -38,7 +38,8 @@ class SecurityConfig(
                 it.requestMatchers(
                         "/api/auth/**",
                         "/swagger-ui/**",
-                        "/v3/api-docs/**"
+                        "/v3/api-docs/**",
+                    "/images/**"
                     )
                     .permitAll()
                     .anyRequest().authenticated()   // 이거 없으면 모든 요청이 거부됨
