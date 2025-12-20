@@ -13,9 +13,11 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
+import org.hibernate.annotations.Comment
 
 @Entity
-class Comment(
+@Comment("댓글")
+class PostComment(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
@@ -24,7 +26,7 @@ class Comment(
     val commentSeq: String,
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    @org.hibernate.annotations.Comment("댓글 내용")
+    @Comment("댓글 내용")
     var content: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,11 +39,11 @@ class Comment(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    @org.hibernate.annotations.Comment("대댓글인 경우 부모 댓글")
-    val parent: Comment? = null,
+    @Comment("대댓글인 경우 부모 댓글")
+    val parent: PostComment? = null,
 
     @OneToMany(mappedBy = "parent", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val replies: MutableList<Comment> = mutableListOf()
+    val replies: MutableList<PostComment> = mutableListOf()
 ) : BaseTimeEntity() {
     fun update(content: String) {
         this.content = content

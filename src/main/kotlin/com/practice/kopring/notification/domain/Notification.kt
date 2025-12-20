@@ -45,7 +45,7 @@ class Notification(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
-    val comment: com.practice.kopring.comment.domain.Comment? = null,
+    val comment: com.practice.kopring.comment.domain.PostComment? = null,
 
     @Column(nullable = false)
     @Comment("읽음 여부")

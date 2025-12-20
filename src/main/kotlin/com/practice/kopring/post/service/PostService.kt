@@ -1,5 +1,6 @@
 package com.practice.kopring.post.service
 
+import com.practice.kopring.auth.dto.CustomUserDetails
 import com.practice.kopring.common.enums.ErrorCode
 import com.practice.kopring.common.exception.BusinessException
 import com.practice.kopring.common.response.PageResponse
@@ -61,6 +62,13 @@ class PostService (
 
     fun getPostList(pageable: Pageable): PageResponse<PostResponse> {
         val result: Page<PostResponse> = postRepository.getPostList(pageable)
+        return PageResponse.of(result)
+    }
+
+    fun getMyFeed(pageable: Pageable, user: CustomUserDetails): PageResponse<PostResponse> {
+        val userSeq = user.getUserSeq()
+
+        val result: Page<PostResponse> = postRepository.getMyFeed(pageable, userSeq)
         return PageResponse.of(result)
     }
 }

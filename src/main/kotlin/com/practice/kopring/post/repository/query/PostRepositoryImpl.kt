@@ -18,6 +18,7 @@ class PostRepositoryImpl(
     private val queryFactory: JPAQueryFactory,
 ) : PostRepositoryCustom {
 
+    // TODO: 내가 팔로우한 회원의 피드 조회
     override fun getPostList(pageable: Pageable): Page<PostResponse> {
         val totalCount = queryFactory.select(post.count())
             .from(post)
@@ -75,9 +76,69 @@ class PostRepositoryImpl(
         return PageImpl(post, pageable, totalCount)
     }
 
-    // 내 글 또는 팔로잉한 사람의 글만 조회
-    private fun isMyPostOrFollowingPost(currentUserSeq: String): BooleanExpression {
+    override fun getMyFeed(
+        pageable: Pageable,
+        userSeq: String
+    ): Page<PostResponse> {
+        val totalCount = queryFactory.select(post.count())
+            .from(post)
+            .innerJoin(user).on(post.user.eq(user)
+                .and(user.userSeq.eq(userSeq))
+            )
+            .where(post.deletedAt.isNull())
+            .fetchOne() ?: 0L
 
-        return TODO("Provide the return value")
+        if (totalCount == 0L) {
+            return PageImpl(emptyList(), pageable, totalCount)
+        }
+
+        val post = queryFactory.select(
+                QPostResponse(
+                    post.postSeq,
+                    post.caption,
+                    post.location,
+                    post.likeCount,
+                    post.commentCount,
+                    QAuthorInfo(
+                        user.userSeq,
+                        user.username,
+                        user.email,
+                        user.profileImage
+                    ),
+                    post.createdAt,
+                    post.updatedAt
+                )
+            )
+            .from(post)
+            .innerJoin(user).on(post.user.eq(user)
+                .and(user.userSeq.eq(userSeq))
+            )
+            .where(post.deletedAt.isNull())
+            .orderBy(post.createdAt.desc())
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
+            .fetch()
+
+        val postSeqs = post.map { it.postSeq }
+
+        // 4. 이미지 별도 조회 (IN 쿼리 한 번)
+        val postImagesMap: Map<String, List<String>> = if (postSeqs.isNotEmpty()) {
+            queryFactory
+                .select(postImage.post.postSeq, postImage.path)
+                .from(postImage)
+                .where(postImage.post.postSeq.`in`(postSeqs))
+                .orderBy(postImage.imageOrder.asc())  // 순서 보장
+                .fetch()
+                .groupBy({ it.get(postImage.post.postSeq)!! }, { it.get(postImage.path)!! })
+        } else {
+            emptyMap()
+        }
+
+        post.forEach {
+            it.images = postImagesMap[it.postSeq] ?: emptyList()
+        }
+
+        return PageImpl(post, pageable, totalCount)
     }
+
 }

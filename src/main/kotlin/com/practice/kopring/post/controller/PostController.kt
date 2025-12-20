@@ -41,11 +41,26 @@ class PostController (
     @GetMapping("")
     @Operation(summary = "피드 조회", description = "메인화면 피드를 조회합니다.")
     fun getPostList(
-        pageable: Pageable
+        pageable: Pageable,
     ): ResponseEntity<ApiResponse<PageResponse<PostResponse>>> {
         return ResponseEntity.ok(
             ApiResponse.success(
                 postService.getPostList(pageable),
+                "조회 성공",
+                HttpStatus.OK.value()
+            )
+        )
+    }
+
+    @GetMapping("/my/feed")
+    @Operation(summary = "내 게시글 조회", description = "내가 등록한 게시글을 조회합니다.")
+    fun getMyFeed(
+        pageable: Pageable,
+        user: CustomUserDetails
+    ): ResponseEntity<ApiResponse<PageResponse<PostResponse>>> {
+        return ResponseEntity.ok(
+            ApiResponse.success(
+                postService.getMyFeed(pageable, user),
                 "조회 성공",
                 HttpStatus.OK.value()
             )

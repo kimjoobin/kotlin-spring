@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
 import org.hibernate.annotations.Comment
+import org.hibernate.annotations.DynamicUpdate
 
 @Entity
 @Table(
@@ -20,6 +21,7 @@ import org.hibernate.annotations.Comment
         UniqueConstraint(columnNames = ["follower_id", "following_id"]) // 중복 팔로우 방지
     ]
 )
+@DynamicUpdate
 class Follow (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
