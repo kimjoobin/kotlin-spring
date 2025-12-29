@@ -8,7 +8,7 @@ import com.practice.kopring.common.exception.BusinessException
 import com.practice.kopring.common.enums.ErrorCode
 import com.practice.kopring.jwt.JwtProvider
 import com.practice.kopring.user.domain.User
-import com.practice.kopring.user.repository.UserRepository
+import com.practice.kopring.user.repository.jpa.UserRepository
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -26,7 +26,7 @@ class AuthService(
 ) {
 
     @Transactional
-    fun signup(request: CreateUserRequest) {
+    fun signup(request: CreateUserRequest) : LoginResponse {
         // 중복검사
         if (userRepository.existsByEmail(request.email)) {
             throw BusinessException(ErrorCode.DUPLICATE_EMAIL)
@@ -50,6 +50,11 @@ class AuthService(
         if (saveUser.id == null) {
             throw BusinessException(ErrorCode.INTERNAL_SERVER_ERROR)
         }
+
+        val accessToken = jwtProvider.generateAccessToken(user.userSeq, user.username)
+        val refreshToken = jwtProvider.generateRefreshToken(user.userSeq, user.username)
+
+        return LoginResponse(accessToken, refreshToken)
 
     }
 

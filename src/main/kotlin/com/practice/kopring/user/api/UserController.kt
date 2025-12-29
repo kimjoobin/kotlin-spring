@@ -2,10 +2,13 @@ package com.practice.kopring.user.api
 
 import com.practice.kopring.auth.dto.CustomUserDetails
 import com.practice.kopring.common.response.ApiResponse
+import com.practice.kopring.common.response.PageResponse
+import com.practice.kopring.user.dto.response.FollowUser
 import com.practice.kopring.user.dto.response.MyInfoResponse
 import com.practice.kopring.user.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -29,6 +32,21 @@ class UserController(
         return ResponseEntity.ok(
             ApiResponse.success(
                 userService.getMyInfo(user),
+                "조회 성공",
+                HttpStatus.OK.value()
+            )
+        )
+    }
+
+    @GetMapping("/followers")
+    @Operation(summary = "팔로워 조회")
+    fun getMyFollowers(
+        @AuthenticationPrincipal user: CustomUserDetails,
+        pageable: Pageable
+    ): ResponseEntity<ApiResponse<PageResponse<FollowUser>>> {
+        return ResponseEntity.ok(
+            ApiResponse.success(
+                userService.getMyFollowers(user, pageable),
                 "조회 성공",
                 HttpStatus.OK.value()
             )

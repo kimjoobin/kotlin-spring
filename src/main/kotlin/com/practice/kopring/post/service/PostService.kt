@@ -7,9 +7,10 @@ import com.practice.kopring.common.response.PageResponse
 import com.practice.kopring.common.service.FileStorageService
 import com.practice.kopring.post.domain.Post
 import com.practice.kopring.post.dto.request.CreatePostRequest
+import com.practice.kopring.post.dto.response.MyFeedResponse
 import com.practice.kopring.post.dto.response.PostResponse
 import com.practice.kopring.post.repository.jpa.PostRepository
-import com.practice.kopring.user.repository.UserRepository
+import com.practice.kopring.user.repository.jpa.UserRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -65,10 +66,10 @@ class PostService (
         return PageResponse.of(result)
     }
 
-    fun getMyFeed(pageable: Pageable, user: CustomUserDetails): PageResponse<PostResponse> {
+    fun getMyFeed(pageable: Pageable, user: CustomUserDetails): PageResponse<MyFeedResponse> {
         val userSeq = user.getUserSeq()
 
-        val result: Page<PostResponse> = postRepository.getMyFeed(pageable, userSeq)
+        val result: Page<MyFeedResponse> = postRepository.getMyFeed(pageable, userSeq)
         return PageResponse.of(result)
     }
 }

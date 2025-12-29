@@ -26,10 +26,10 @@ class AuthController (
 
     @PostMapping("/signup")
     @Operation(summary = "회원가입")
-    fun signup(@RequestBody @Valid request: CreateUserRequest): ResponseEntity<ApiResponse<Nothing>> {
-        authService.signup(request)
+    fun signup(@RequestBody @Valid request: CreateUserRequest): ResponseEntity<ApiResponse<LoginResponse>> {
+        val response = authService.signup(request)
         return ResponseEntity.ok(
-            ApiResponse.success("회원가입이 완료되었습니다.", HttpStatus.CREATED.value())
+            ApiResponse.success(response,"회원가입이 완료되었습니다.", HttpStatus.CREATED.value())
         )
     }
 

@@ -4,6 +4,7 @@ import com.practice.kopring.auth.dto.CustomUserDetails
 import com.practice.kopring.common.response.ApiResponse
 import com.practice.kopring.common.response.PageResponse
 import com.practice.kopring.post.dto.request.CreatePostRequest
+import com.practice.kopring.post.dto.response.MyFeedResponse
 import com.practice.kopring.post.dto.response.PostResponse
 import com.practice.kopring.post.service.PostService
 import io.swagger.v3.oas.annotations.Operation
@@ -56,8 +57,8 @@ class PostController (
     @Operation(summary = "내 게시글 조회", description = "내가 등록한 게시글을 조회합니다.")
     fun getMyFeed(
         pageable: Pageable,
-        user: CustomUserDetails
-    ): ResponseEntity<ApiResponse<PageResponse<PostResponse>>> {
+        @AuthenticationPrincipal user: CustomUserDetails
+    ): ResponseEntity<ApiResponse<PageResponse<MyFeedResponse>>> {
         return ResponseEntity.ok(
             ApiResponse.success(
                 postService.getMyFeed(pageable, user),

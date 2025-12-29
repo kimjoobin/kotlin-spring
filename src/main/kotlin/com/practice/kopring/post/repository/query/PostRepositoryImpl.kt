@@ -2,11 +2,12 @@ package com.practice.kopring.post.repository.query
 
 import com.practice.kopring.post.domain.QPost.post
 import com.practice.kopring.post.domain.QPostImage.postImage
+import com.practice.kopring.post.dto.response.MyFeedResponse
 import com.practice.kopring.post.dto.response.PostResponse
+import com.practice.kopring.post.dto.response.QMyFeedResponse
 import com.practice.kopring.post.dto.response.QPostResponse
 import com.practice.kopring.user.domain.QUser.user
 import com.practice.kopring.user.dto.response.QAuthorInfo
-import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -79,13 +80,13 @@ class PostRepositoryImpl(
     override fun getMyFeed(
         pageable: Pageable,
         userSeq: String
-    ): Page<PostResponse> {
+    ): Page<MyFeedResponse> {
         val totalCount = queryFactory.select(post.count())
             .from(post)
-            .innerJoin(user).on(post.user.eq(user)
-                .and(user.userSeq.eq(userSeq))
+            .where(
+                post.deletedAt.isNull(),
+                post.user.userSeq.eq(userSeq)
             )
-            .where(post.deletedAt.isNull())
             .fetchOne() ?: 0L
 
         if (totalCount == 0L) {
@@ -93,52 +94,29 @@ class PostRepositoryImpl(
         }
 
         val post = queryFactory.select(
-                QPostResponse(
-                    post.postSeq,
-                    post.caption,
-                    post.location,
-                    post.likeCount,
-                    post.commentCount,
-                    QAuthorInfo(
-                        user.userSeq,
-                        user.username,
-                        user.email,
-                        user.profileImage
-                    ),
-                    post.createdAt,
-                    post.updatedAt
+            QMyFeedResponse(
+                post.postSeq,
+                post.likeCount,
+                post.commentCount,
+                postImage.path
+                    )
                 )
-            )
-            .from(post)
-            .innerJoin(user).on(post.user.eq(user)
-                .and(user.userSeq.eq(userSeq))
-            )
-            .where(post.deletedAt.isNull())
-            .orderBy(post.createdAt.desc())
-            .offset(pageable.offset)
-            .limit(pageable.pageSize.toLong())
-            .fetch()
-
-        val postSeqs = post.map { it.postSeq }
-
-        // 4. 이미지 별도 조회 (IN 쿼리 한 번)
-        val postImagesMap: Map<String, List<String>> = if (postSeqs.isNotEmpty()) {
-            queryFactory
-                .select(postImage.post.postSeq, postImage.path)
-                .from(postImage)
-                .where(postImage.post.postSeq.`in`(postSeqs))
-                .orderBy(postImage.imageOrder.asc())  // 순서 보장
+                .from(post)
+                .leftJoin(postImage).on(postImage.post.eq(post))
+                .where(
+                    post.deletedAt.isNull()
+                        .and(post.user.userSeq.eq(userSeq))
+                        .and(postImage.imageOrder.eq(0))
+                        .or(post.images.isEmpty)
+                )
+                .orderBy(post.createdAt.desc())
+                .offset(pageable.offset)
+                .limit(pageable.pageSize.toLong())
                 .fetch()
-                .groupBy({ it.get(postImage.post.postSeq)!! }, { it.get(postImage.path)!! })
-        } else {
-            emptyMap()
-        }
 
-        post.forEach {
-            it.images = postImagesMap[it.postSeq] ?: emptyList()
-        }
 
-        return PageImpl(post, pageable, totalCount)
+            return PageImpl(post, pageable, totalCount)
+
     }
 
 }

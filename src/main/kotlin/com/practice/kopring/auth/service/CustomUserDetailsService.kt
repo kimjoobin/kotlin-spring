@@ -1,7 +1,7 @@
 package com.practice.kopring.auth.service
 
 import com.practice.kopring.auth.dto.CustomUserDetails
-import com.practice.kopring.user.repository.UserRepository
+import com.practice.kopring.user.repository.jpa.UserRepository
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException

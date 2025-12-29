@@ -18,6 +18,7 @@ enum class ErrorCode(val status: Int, val message: String) {
 
     // 404 Not Found 관련
     NOT_FOUND_RESOURCE(404, "해당 리소스를 찾을 수 없습니다."),
+    NOT_FOUND_USER(404, "존재하지 않는 회원입니다."),
 
     // 409 conflict
     DUPLICATE_EMAIL(409, "이미 존재하는 이메일입니다."),
