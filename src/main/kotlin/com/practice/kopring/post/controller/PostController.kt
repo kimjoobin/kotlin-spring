@@ -67,4 +67,18 @@ class PostController (
             )
         )
     }
+
+    @GetMapping("/{postSeq}")
+    @Operation(summary = "게시글 상세 조회", description = "게시글 상세를 조회합니다.")
+    fun getPostDetail(
+        @PathVariable postSeq: String
+    ): ResponseEntity<ApiResponse<PostResponse>> {
+        return ResponseEntity.ok(
+            ApiResponse.success(
+                postService.getPostDetail(postSeq),
+                "조회 성공",
+                HttpStatus.OK.value()
+            )
+        )
+    }
 }

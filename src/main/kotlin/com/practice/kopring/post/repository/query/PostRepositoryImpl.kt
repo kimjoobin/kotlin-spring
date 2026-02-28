@@ -119,4 +119,42 @@ class PostRepositoryImpl(
 
     }
 
+    override fun getPostDetail(postSeq: String): PostResponse? {
+        val result = queryFactory.select(
+            QPostResponse(
+                post.postSeq,
+                post.caption,
+                post.location,
+                post.likeCount,
+                post.commentCount,
+                QAuthorInfo(
+                    user.userSeq,
+                    user.username,
+                    user.email,
+                    user.profileImage
+                ),
+                post.createdAt,
+                post.updatedAt
+            )
+        )
+            .from(post)
+            .innerJoin(user).on(post.user.eq(user))
+            .where(
+                post.postSeq.eq(postSeq),
+                post.deletedAt.isNull()
+            )
+            .fetchOne() ?: return null
+
+        // 이미지 별도 조회 (getPostList와 동일한 패턴)
+        val images = queryFactory
+            .select(postImage.path)
+            .from(postImage)
+            .where(postImage.post.postSeq.eq(postSeq))
+            .orderBy(postImage.imageOrder.asc())
+            .fetch()
+
+        result.images = images
+        return result
+    }
+
 }

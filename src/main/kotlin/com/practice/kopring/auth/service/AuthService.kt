@@ -9,6 +9,7 @@ import com.practice.kopring.common.enums.ErrorCode
 import com.practice.kopring.jwt.JwtProvider
 import com.practice.kopring.user.domain.User
 import com.practice.kopring.user.repository.jpa.UserRepository
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -16,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
+
+private val log = KotlinLogging.logger {}
 
 @Service
 class AuthService(

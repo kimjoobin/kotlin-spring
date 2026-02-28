@@ -9,4 +9,6 @@ interface PostRepositoryCustom {
     fun getPostList(pageable: Pageable): Page<PostResponse>
 
     fun getMyFeed(pageable: Pageable, userSeq: String): Page<MyFeedResponse>
+
+    fun getPostDetail(postSeq: String): PostResponse?
 }

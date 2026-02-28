@@ -60,7 +60,6 @@ class PostService (
         findUser.increasePostCount()
     }
 
-
     fun getPostList(pageable: Pageable): PageResponse<PostResponse> {
         val result: Page<PostResponse> = postRepository.getPostList(pageable)
         return PageResponse.of(result)
@@ -71,5 +70,10 @@ class PostService (
 
         val result: Page<MyFeedResponse> = postRepository.getMyFeed(pageable, userSeq)
         return PageResponse.of(result)
+    }
+
+    fun getPostDetail(postSeq: String): PostResponse {
+        return postRepository.getPostDetail(postSeq)
+            ?: throw BusinessException(ErrorCode.NOT_FOUND_RESOURCE)
     }
 }
